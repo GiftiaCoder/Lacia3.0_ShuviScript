@@ -19,7 +19,8 @@ class OutputMethod(method.ShuviMethod):
         output = input * input + offset
         self.register_output('output', output)
 
-script = 'input = (output)()input_method()\n' \
+script = '#this is just a comment example\n' \
+         'input = (output)()input_method()\n' \
          'output1 = (output)(offset)output_method(input.output)\n' \
          'output2 = (output)(offset)output_method(output1.output)'
 
@@ -40,6 +41,5 @@ if graph.build():
             'output1.offset': 1,
             'output2.offset': 10
         }))
-
 else:
     logger.error('build graph failed')

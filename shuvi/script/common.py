@@ -1,6 +1,7 @@
 from enum import Enum
 
 class Type(Enum):
+    COMMENT = 'comment'
     REF = 'ref'
     NAME = 'name'
     EQUAL = 'equal'
@@ -10,6 +11,7 @@ class Type(Enum):
     SPACE = 'space'
 
 __pattern_type_map__ = [
+    (Type.COMMENT, '#[\S \t\v\f]*'),
     (Type.REF, '[a-zA-Z_]\w*\.[a-zA-Z_]\w*'),
     (Type.NAME, '[a-zA-Z_]\w*'),
     (Type.EQUAL, '='),
@@ -19,5 +21,6 @@ __pattern_type_map__ = [
     (Type.SPACE, '\s+'),
 ]
 __ignored_type_name__ = {
-    Type.SPACE
+    Type.COMMENT,
+    Type.SPACE,
 }
