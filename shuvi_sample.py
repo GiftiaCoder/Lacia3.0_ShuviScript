@@ -15,12 +15,13 @@ class OutputMethod(method.ShuviMethod):
         offset = tf.placeholder(tf.float32)
         self.register_placeholder('offset', offset)
 
-        input = inputs['input.output']
+        input = inputs[0]
         output = input * input + offset
         self.register_output('output', output)
 
 script = 'input = (output)()input_method()\n' \
-         'output = (output)(offset)output_method(input.output)'
+         'output1 = (output)(offset)output_method(input.output)\n' \
+         'output2 = (output)(offset)output_method(output1.output)'
 
 graph = graph.ShuviGraph(script, {
     'input_method': InputMethod,
@@ -32,11 +33,13 @@ if graph.build():
 
         graph.update_conf()
         print(graph.run(sess, 'input.output'))
-        print(graph.run(sess, 'output.output', {
-            'output.offset': 1
+        print(graph.run(sess, 'output1.output', {
+            'output1.offset': 1
         }))
-        print(graph.run(sess, 'output.output', {
-            'output.offset': 10
+        print(graph.run(sess, 'output2.output', {
+            'output1.offset': 1,
+            'output2.offset': 10
         }))
+
 else:
     logger.error('build graph failed')
