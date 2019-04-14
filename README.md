@@ -16,6 +16,8 @@ lacia project will entirely restructured by a tiny script named ShuviScript, joi
 
 shuvicript can be split into three part: script, method and configure
 
+you can see __shuvi_sample.py__ as an exampe
+
 ### script
 
 shuviscript is just a Graph Description Launguage, which works just like UML to descibe a link graph of a model . it is said that, shuviscript cannot define the real logic of a model .
