@@ -4,12 +4,22 @@ class ShuviMethod(object):
     def __init__(self, name, graph, inputs):
         self.output_map = {}
         self.placeholder_map = {}
+        self.name = name
+        self.graph = graph
+
+        self.inputs = inputs
 
     def init(self, sess):
         pass
-
-    def update_conf(self):
+    def update_conf(self, conf):
         pass
+
+    def get_name(self):
+        return self.name
+    def get_graph(self):
+        return self.graph
+    def get_inputs(self):
+        return self.inputs
 
     def register_output(self, name, tensor):
         if name not in self.output_map:

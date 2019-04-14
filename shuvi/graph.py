@@ -15,7 +15,7 @@ class ShuviGraph(object):
         self.conf_paths = list(conf_paths)
         self.update_conf()
 
-    def build_self(self):
+    def build(self):
         ctx = context.ShuviContext(self.method_registry)
         lexana = lexical.LexicalAnalyzer()
         synana = syntax.SyntaxAnalyzer(ctx)
@@ -35,8 +35,8 @@ class ShuviGraph(object):
 
     def get_node_names(self):
         return set(self.node_map)
-    def append_node(self, name, graph_node, outputs):
-        self.node_map[name] = (graph_node, outputs)
+    def append_node(self, node, outputs):
+        self.node_map[node.get_name()] = (node, outputs)
 
     def get_node(self, name):
         if name in self.node_map:
@@ -75,21 +75,30 @@ class ShuviGraph(object):
         for node in self.node_map:
             self.node_map[node][0].init(sess)
 
-    def run(self, sess, node_edge, placeholder_map):
+    def run(self, sess, node_edge, placeholder_map = None):
         output = self.get_output(node_edge)
         feeddict = {}
-        for key in placeholder_map:
-            placeholder = self.get_placeholder(key)
-            feeddict[placeholder] = placeholder_map[key]
+        if placeholder_map:
+            for key in placeholder_map:
+                placeholder = self.get_placeholder(key)
+                feeddict[placeholder] = placeholder_map[key]
         return sess.run(output, feed_dict=feeddict)
     def update_conf(self):
+        update_success = True
         for path in self.conf_paths:
             with open(path) as file:
                 try:
                     js = json.loads(file.read())
                     self.conf_map[js['name']] = js
                 except Exception as e:
+                    update_success = False
                     logger.error('exception: %s' % str(e))
+        if update_success:
+            for node, _ in self.node_map.values():
+                if node.get_name() in self.conf_map:
+                    node.update_conf(self.conf_map[node.get_name()])
+                else:
+                    logger.warning('conf of node %s not found' % node.get_name())
 
     def get_conf(self, name):
         if name in self.conf_map:

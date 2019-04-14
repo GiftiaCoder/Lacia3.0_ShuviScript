@@ -57,5 +57,5 @@ class ShuviContext(object):
                 input_list[input] = input_edge
 
             graph_node = self.method_registry[node.method](node.name, graph, input_list)
-            graph.append_node(node.name, graph_node, set(node.output))
+            graph.append_node(graph_node, set(node.output))
         return True

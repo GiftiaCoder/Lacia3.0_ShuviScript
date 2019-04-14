@@ -31,12 +31,12 @@ lay2=(encode, decode, train)(studyrate)sae_tanh(lay1.encode)
 how to understand above script:
 
 ```
-<node-name>=<output-list><placeholder-list><method-name><input-ist>
+<node-name>=<output-list><placeholder-list><method-name><input-list>
 ```
 
 ### ShuviMethod
 
-shuvi method defined the real logic of a model , which can be written by OO .
+shuvi method defined the real logic of a model , which can be thought in OO .
 
 you just need to inherit class shuvi.method.method.ShuviMethod , and override function: __constructor__, __init__ and __update_conf__ , like below:
 

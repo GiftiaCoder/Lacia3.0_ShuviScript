@@ -1,6 +1,7 @@
 import shuvi.graph as graph
 import shuvi.method.method as method
 import tensorflow as tf
+from base.logger import logger
 
 class InputMethod(method.ShuviMethod):
     def __init__(self, name, graph, inputs):
@@ -25,13 +26,17 @@ graph = graph.ShuviGraph(script, {
     'input_method': InputMethod,
     'output_method': OutputMethod,
 })
-graph.build_self()
+if graph.build():
+    with tf.Session() as sess:
+        graph.init(sess)
 
-with tf.Session() as sess:
-    graph.init(sess)
-    print(graph.run(sess, 'output.output', {
-        'output.offset': 1
-    }))
-    print(graph.run(sess, 'output.output', {
-        'output.offset': 10
-    }))
+        graph.update_conf()
+        print(graph.run(sess, 'input.output'))
+        print(graph.run(sess, 'output.output', {
+            'output.offset': 1
+        }))
+        print(graph.run(sess, 'output.output', {
+            'output.offset': 10
+        }))
+else:
+    logger.error('build graph failed')
