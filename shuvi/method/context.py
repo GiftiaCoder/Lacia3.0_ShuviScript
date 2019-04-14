@@ -1,5 +1,4 @@
 from base.logger import logger
-from shuvi.graph import ShuviGraph
 
 class ShuviNode(object):
     def __init__(self):
@@ -45,17 +44,17 @@ class ShuviContext(object):
                 logger.error('multi-declared node of name: %s' % node.name)
                 return False
 
-            input_list = []
+            input_list = {}
             for input in node.input:
                 name, edge = input.split('.')
                 if name not in graph.get_node_names():
                     logger.error('referenced an undeclered node: %s' % name)
                     return False
-                input_edge = graph.get_node(name).get_output()
+                input_edge = graph.get_node(name).get_output(edge)
                 if not input_edge:
                     logger.error('referenced an undeclared node output: %s' % edge)
                     return False
-                input_list.append((input, input_edge))
+                input_list[input] = input_edge
 
             graph_node = self.method_registry[node.method](node.name, graph, input_list)
             graph.append_node(node.name, graph_node, set(node.output))

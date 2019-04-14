@@ -1,9 +1,9 @@
 from base.logger import logger
 import tensorflow as tf
 import json
-import method.context as context
-import script.lexical as lexical
-import script.syntax as syntax
+import shuvi.method.context as context
+import shuvi.script.lexical as lexical
+import shuvi.script.syntax as syntax
 
 class ShuviGraph(object):
     def __init__(self, script, method_registry, *conf_paths):
@@ -49,10 +49,10 @@ class ShuviGraph(object):
             logger.error('invalid node edge: %s' % edge_name)
             return None
         node = self.get_node(lst[0])
-        if not node:
+        if node == None:
             return None
         edge = node.get_output(lst[1])
-        if not edge:
+        if edge == None:
             logger.error('output of name %s not found in node %s of method %s' % (lst[1], lst[0], str(type(node))))
             return None
         return edge
@@ -65,7 +65,7 @@ class ShuviGraph(object):
         if not node:
             return None
         edge = node.get_placeholder(lst[1])
-        if not edge:
+        if edge == None:
             logger.error('placeholder of name %s not found in node %s of method %s' % (lst[1], lst[0], str(type(node))))
             return None
         return edge
@@ -81,8 +81,7 @@ class ShuviGraph(object):
         for key in placeholder_map:
             placeholder = self.get_placeholder(key)
             feeddict[placeholder] = placeholder_map[key]
-        sess.run(output, feed_dict=feeddict)
-        return
+        return sess.run(output, feed_dict=feeddict)
     def update_conf(self):
         for path in self.conf_paths:
             with open(path) as file:

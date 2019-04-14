@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dedbb2c2-02c3-4fd4-9fef-d9bee5663007" name="Default" comment="" />
+    <list default="true" id="dedbb2c2-02c3-4fd4-9fef-d9bee5663007" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lacia_test.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/shuvi/graph.py" afterPath="$PROJECT_DIR$/shuvi/graph.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/shuvi/method/context.py" afterPath="$PROJECT_DIR$/shuvi/method/context.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/shuvi/method/method.py" afterPath="$PROJECT_DIR$/shuvi/method/method.py" />
+    </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -10,28 +17,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="lacia.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/lacia.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="logger.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/base/logger.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -66,27 +52,34 @@
         <option value="$PROJECT_DIR$/shuvi/common.py" />
         <option value="$PROJECT_DIR$/shuvi/lexical.py" />
         <option value="$PROJECT_DIR$/shuvi/syntax.py" />
-        <option value="$PROJECT_DIR$/lacia.log" />
         <option value="$PROJECT_DIR$/shuvi/script/lexical.py" />
         <option value="$PROJECT_DIR$/shuvi/script/common.py" />
         <option value="$PROJECT_DIR$/shuvi/lacia.log" />
         <option value="$PROJECT_DIR$/shuvi/shuvi.py" />
         <option value="$PROJECT_DIR$/shuvi/context.py" />
-        <option value="$PROJECT_DIR$/shuvi/method/method.py" />
         <option value="$PROJECT_DIR$/shuvi/method/graph.py" />
         <option value="$PROJECT_DIR$/shuvi/script/syntax.py" />
-        <option value="$PROJECT_DIR$/shuvi/method/context.py" />
         <option value="$PROJECT_DIR$/shuvi/test.py" />
-        <option value="$PROJECT_DIR$/shuvi/graph.py" />
+        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/lacia.py" />
+        <option value="$PROJECT_DIR$/shuvi/method/method.py" />
+        <option value="$PROJECT_DIR$/shuvi/method/__init__.py" />
+        <option value="$PROJECT_DIR$/shuvi/script/__init__.py" />
+        <option value="$PROJECT_DIR$/lacia.log" />
+        <option value="$PROJECT_DIR$/shuvi/method/context.py" />
+        <option value="$PROJECT_DIR$/lacia_test.py" />
+        <option value="$PROJECT_DIR$/shuvi/graph.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="ProjectFrameBounds" extendedState="7">
     <option name="x" value="44" />
     <option name="y" value="247" />
     <option name="width" value="1613" />
     <option name="height" value="1047" />
+  </component>
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -162,24 +155,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.lacia">
-    <configuration name="engine" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/shuvi" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="lacia_3_0" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/shuvi/engine.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-    </configuration>
+  <component name="RunManager" selected="Python.lacia_test">
     <configuration name="lacia" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -193,6 +169,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="lacia_3_0" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lacia.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+    </configuration>
+    <configuration name="lacia_test" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="lacia_3_0" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/lacia_test.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -252,16 +245,16 @@
       <item index="0" class="java.lang.String" itemvalue="Python.lacia" />
       <item index="1" class="java.lang.String" itemvalue="Python.shuvi" />
       <item index="2" class="java.lang.String" itemvalue="Python.lexical" />
-      <item index="3" class="java.lang.String" itemvalue="Python.engine" />
-      <item index="4" class="java.lang.String" itemvalue="Python.syntax" />
+      <item index="3" class="java.lang.String" itemvalue="Python.syntax" />
+      <item index="4" class="java.lang.String" itemvalue="Python.lacia_test" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.lacia" />
-        <item index="1" class="java.lang.String" itemvalue="Python.shuvi" />
-        <item index="2" class="java.lang.String" itemvalue="Python.syntax" />
-        <item index="3" class="java.lang.String" itemvalue="Python.lexical" />
-        <item index="4" class="java.lang.String" itemvalue="Python.engine" />
+        <item index="0" class="java.lang.String" itemvalue="Python.lacia_test" />
+        <item index="1" class="java.lang.String" itemvalue="Python.lacia" />
+        <item index="2" class="java.lang.String" itemvalue="Python.shuvi" />
+        <item index="3" class="java.lang.String" itemvalue="Python.syntax" />
+        <item index="4" class="java.lang.String" itemvalue="Python.lexical" />
       </list>
     </recent_temporary>
   </component>
@@ -282,13 +275,12 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="44" y="247" width="1613" height="1047" extended-state="0" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.122103944" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1015625" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19631237" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26789588" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -351,19 +343,21 @@
     <entry file="file://$PROJECT_DIR$/shuvi/__init__.py" />
     <entry file="file://$PROJECT_DIR$/base/__init__.py" />
     <entry file="file://$PROJECT_DIR$/shuvi/engine.py" />
-    <entry file="file://$PROJECT_DIR$/lacia.log" />
     <entry file="file://$PROJECT_DIR$/lacia/__init__.py" />
     <entry file="file://$PROJECT_DIR$/shuvi/shuvi.py" />
     <entry file="file://$PROJECT_DIR$/shuvi/lacia.log" />
     <entry file="file://$PROJECT_DIR$/base/edge.py" />
-    <entry file="file://$PROJECT_DIR$/shuvi/script/common.py" />
-    <entry file="file://$PROJECT_DIR$/shuvi/method/context.py" />
-    <entry file="file://$PROJECT_DIR$/shuvi/script/lexical.py" />
     <entry file="file://$PROJECT_DIR$/shuvi/script/syntax.py" />
     <entry file="file://$PROJECT_DIR$/shuvi/test.py" />
-    <entry file="file://$PROJECT_DIR$/shuvi/method/method.py" />
-    <entry file="file://$PROJECT_DIR$/shuvi/graph.py" />
-    <entry file="file://$PROJECT_DIR$/lacia.py">
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="50">
+          <caret line="2" column="127" lean-forward="false" selection-start-line="2" selection-start-column="127" selection-end-line="2" selection-end-column="127" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shuvi/script/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -371,7 +365,83 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/shuvi/method/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shuvi/script/common.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shuvi/script/lexical.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-225">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/base/logger.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="10" column="26" lean-forward="true" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lacia.log">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shuvi/method/context.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="426">
+          <caret line="56" column="44" lean-forward="true" selection-start-line="56" selection-start-column="44" selection-end-line="56" selection-end-column="44" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shuvi/graph.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-24">
+          <caret line="67" column="14" lean-forward="false" selection-start-line="67" selection-start-column="14" selection-end-line="68" selection-end-column="14" />
+          <folding>
+            <element signature="e#0#30#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/shuvi/method/method.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="250">
+          <caret line="10" column="26" lean-forward="true" selection-start-line="10" selection-start-column="26" selection-end-line="10" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lacia_test.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="625">
+          <caret line="25" column="34" lean-forward="true" selection-start-line="25" selection-start-column="34" selection-end-line="25" selection-end-column="34" />
+          <folding>
+            <element signature="e#0#27#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/lacia.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
