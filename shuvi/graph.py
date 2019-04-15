@@ -98,13 +98,7 @@ class ShuviGraph(object):
                     logger.error('exception: %s' % str(e))
         if update_success:
             for node, _ in self.node_map.values():
+                conf = None
                 if node.get_name() in self.conf_map:
-                    node.update_conf(self.conf_map[node.get_name()])
-                else:
-                    logger.warning('conf of node %s not found' % node.get_name())
-
-    def get_conf(self, name):
-        if name in self.conf_map:
-            return self.conf_map[name]
-        logger.error('cannot find conf of name: %s' % name)
-        return None
+                    conf = self.conf_map[node.get_name()]
+                node.update_conf(conf, self.conf_map)

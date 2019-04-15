@@ -11,7 +11,7 @@ class ShuviMethod(object):
 
     def init(self, sess):
         pass
-    def update_conf(self, conf):
+    def update_conf(self, conf, confs):
         pass
 
     def get_name(self):

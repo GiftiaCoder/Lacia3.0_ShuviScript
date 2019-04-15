@@ -21,7 +21,6 @@ class SyntaxAnalyzer(object):
             if not syn_func:
                 self.context.finish_cur_node()
                 syn_func = self.__syn_nodename
-
         return True
 
     def __syn_nodename(self, token_list, offset):
@@ -41,26 +40,22 @@ class SyntaxAnalyzer(object):
         syn_func, output_list = self.__syn_parselist_start, self.context.node_get_output()
         while offset < len(token_list):
             offset, syn_func = syn_func(token_list, offset, Type.NAME, output_list)
-
             if offset:
                 if not syn_func:
                     return offset, self.__syn_placeholderlist
             else:
                 return None, None
-
         return None, None
 
     def __syn_placeholderlist(self, token_list, offset):
         syn_func, placeholder_list = self.__syn_parselist_start, self.context.node_get_placeholder()
         while offset < len(token_list):
             offset, syn_func = syn_func(token_list, offset, Type.NAME, placeholder_list)
-
             if offset:
                 if not syn_func:
                     return offset, self.__syn_methodname
             else:
                 return None, None
-
         return None, None
 
     def __syn_methodname(self, token_list, offset):
@@ -74,13 +69,11 @@ class SyntaxAnalyzer(object):
         syn_func, input_list = self.__syn_parselist_start, self.context.node_get_input()
         while offset < len(token_list):
             offset, syn_func = syn_func(token_list, offset, Type.REF, input_list)
-
             if offset:
                 if not syn_func:
                     return offset, None
             else:
                 return None, None
-
         return None, None
 
     def __syn_parselist_start(self, token_list, offset, item_type, list_ctx):
