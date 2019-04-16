@@ -1,11 +1,10 @@
 from base.logger import logger
 
 class ShuviMethod(object):
-    def __init__(self, name, graph, inputs):
+    def __init__(self, name, inputs, conf, confs):
         self.output_map = {}
         self.placeholder_map = {}
         self.name = name
-        self.graph = graph
 
         self.inputs = inputs
 
@@ -16,8 +15,6 @@ class ShuviMethod(object):
 
     def get_name(self):
         return self.name
-    def get_graph(self):
-        return self.graph
     def get_inputs(self):
         return self.inputs
 

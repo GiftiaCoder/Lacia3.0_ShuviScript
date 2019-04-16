@@ -13,7 +13,7 @@ class ShuviGraph(object):
         self.method_registry = method_registry
 
         self.conf_paths = list(conf_paths)
-        self.update_conf()
+        self.update_conf(False)
 
     def build(self):
         ctx = context.ShuviContext(self.method_registry)
@@ -86,7 +86,7 @@ class ShuviGraph(object):
         output = self.get_output(node_edge)
         return sess.run(output, feed_dict=feeddict)
 
-    def update_conf(self):
+    def update_conf(self, update_nodes = True):
         update_success = True
         for path in self.conf_paths:
             with open(path) as file:
@@ -96,9 +96,14 @@ class ShuviGraph(object):
                 except Exception as e:
                     update_success = False
                     logger.error('exception: %s' % str(e))
-        if update_success:
+        if update_success and update_nodes:
             for node, _ in self.node_map.values():
-                conf = None
-                if node.get_name() in self.conf_map:
-                    conf = self.conf_map[node.get_name()]
-                node.update_conf(conf, self.conf_map)
+                node.update_conf(self.get_conf(node.get_name()),
+                                 self.get_conf_map())
+    def get_conf(self, name):
+        if name in self.conf_map:
+            return self.conf_map[name]
+        logger.warning('conf of name %s not fount' % name)
+        return None
+    def get_conf_map(self):
+        return self.conf_map
