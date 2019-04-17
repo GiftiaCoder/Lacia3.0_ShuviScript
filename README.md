@@ -44,8 +44,8 @@ you just need to inherit class shuvi.method.method.ShuviMethod , and override fu
 
 ```python
 class OutputMethod(method.ShuviMethod):
-    def __init__(self, name, graph, inputs):
-        super().__init__(name, graph, inputs)
+    def __init__(self, name, inputs, conf, confs):
+        super().__init__(name, inputs, conf, confs)
 
         offset = tf.placeholder(tf.float32)
         self.register_placeholder('offset', offset)
