@@ -4,13 +4,13 @@ import tensorflow as tf
 from base.logger import logger
 
 class InputMethod(method.ShuviMethod):
-    def __init__(self, name, inputs, conf, confs):
-        super().__init__(name, inputs, conf, confs)
+    def __init__(self, name, inputs, graph, conf, confs):
+        super().__init__(name, inputs, graph, conf, confs)
         self.register_output('output', tf.Variable(tf.random_uniform([4], -1.0, 1.0)))
 
 class OutputMethod(method.ShuviMethod):
-    def __init__(self, name, inputs, conf, confs):
-        super().__init__(name, inputs, conf, confs)
+    def __init__(self, name, inputs, graph, conf, confs):
+        super().__init__(name, inputs, graph, conf, confs)
 
         offset = tf.placeholder(tf.float32)
         self.register_placeholder('offset', offset)

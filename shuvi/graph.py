@@ -56,7 +56,6 @@ class ShuviGraph(object):
             logger.error('output of name %s not found in node %s of method %s' % (lst[1], lst[0], str(type(node))))
             return None
         return edge
-
     def get_placeholder(self, edge_name):
         lst = edge_name.split('.')
         if len(lst) != 2:
@@ -83,8 +82,14 @@ class ShuviGraph(object):
                 placeholder = self.get_placeholder(key)
                 feeddict[placeholder] = placeholder_map[key]
 
-        output = self.get_output(node_edge)
-        return sess.run(output, feed_dict=feeddict)
+        lst = node_edge.split('.')
+        if len(lst) != 2:
+            logger.error('invalid node edge: %s' % node_edge)
+            return None
+        node = self.get_node(lst[0])
+        if node == None:
+            return None
+        return node.run(sess, lst[1], feeddict)
 
     def update_conf(self, update_nodes = True):
         update_success = True

@@ -1,7 +1,7 @@
 from base.logger import logger
 
 class ShuviMethod(object):
-    def __init__(self, name, inputs, conf, confs):
+    def __init__(self, name, inputs, graph, conf, confs):
         self.output_map = {}
         self.placeholder_map = {}
         self.name = name
@@ -12,6 +12,8 @@ class ShuviMethod(object):
         pass
     def update_conf(self, conf, confs):
         pass
+    def run(self, sess, output_name, feed_dict):
+        return sess.run(self.get_output(output_name), feed_dict)
 
     def get_name(self):
         return self.name

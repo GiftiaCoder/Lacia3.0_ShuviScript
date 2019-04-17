@@ -58,6 +58,7 @@ class ShuviContext(object):
 
             graph_node = self.method_registry[node.method](node.name,
                                                            input_list,
+                                                           graph,
                                                            graph.get_conf(node.name),
                                                            graph.get_conf_map())
             graph.append_node(graph_node, set(node.output))
