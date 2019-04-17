@@ -92,7 +92,8 @@ class ShuviGraph(object):
             with open(path) as file:
                 try:
                     js = json.loads(file.read())
-                    self.conf_map[js['name']] = js
+                    for name in js:
+                        self.conf_map[name] = js[name]
                 except Exception as e:
                     update_success = False
                     logger.error('exception: %s' % str(e))
