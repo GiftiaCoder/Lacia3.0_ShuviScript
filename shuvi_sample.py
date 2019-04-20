@@ -15,7 +15,7 @@ class OutputMethod(method.ShuviMethod):
         offset = tf.placeholder(tf.float32)
         self.register_placeholder('offset', offset)
 
-        input = inputs[0]
+        input = self.get_input_edge(0)
         output = input * input + offset
         self.register_output('output', output)
 

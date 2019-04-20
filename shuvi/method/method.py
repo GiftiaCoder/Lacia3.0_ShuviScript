@@ -1,5 +1,10 @@
 from base.logger import logger
 
+INPUT_NODE_TUPLE_IDX = 0
+INPUT_EDGE_TUPLE_IDX = 1
+INPUT_NODE_NAME_TUPLE_IDX = 2
+INPUT_EDGE_NAME_TUPLE_IDX = 3
+
 class ShuviMethod(object):
     def __init__(self, name, inputs, graph, conf, confs):
         self.output_map = {}
@@ -21,6 +26,14 @@ class ShuviMethod(object):
         return self.name
     def get_inputs(self):
         return self.inputs
+    def get_input_node(self, idx):
+        return self.inputs[idx][INPUT_NODE_TUPLE_IDX]
+    def get_input_edge(self, idx):
+        return self.inputs[idx][INPUT_EDGE_TUPLE_IDX]
+    def get_input_node_name(self, idx):
+        return self.inputs[idx][INPUT_NODE_NAME_TUPLE_IDX]
+    def get_input_edge_name(self, idx):
+        return self.inputs[idx][INPUT_EDGE_NAME_TUPLE_IDX]
 
     def register_output(self, name, tensor):
         if name not in self.output_map:
