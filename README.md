@@ -40,9 +40,10 @@ how to understand above script:
 
 shuvi method defined the real logic of a model , which can be thought in OO .
 
-you just need to inherit class shuvi.method.method.ShuviMethod , and override function: __constructor__, __init__ and __update_conf__ , like below:
+you just need to inherit class shuvi.method.method.ShuviMethod , and override function: __constructor__, __init__, __run__, __placehold__ and __conf__ , like below:
 
 ```python
+# in this case, we donot need to initialize , set placeholder or update configure, and we can use default run method
 class OutputMethod(method.ShuviMethod):
     def __init__(self, name, inputs, conf, confs):
         super().__init__(name, inputs, conf, confs)

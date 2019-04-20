@@ -54,7 +54,7 @@ class ShuviContext(object):
                 if input_edge == None:
                     logger.error('referenced an undeclared node output: %s' % edge)
                     return False
-                input_list.append(input_edge)
+                input_list.append((input_node, input_edge, node_name, edge_name))
 
             graph_node = self.method_registry[node.method](node.name,
                                                            input_list,

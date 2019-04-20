@@ -10,7 +10,9 @@ class ShuviMethod(object):
 
     def init(self, sess):
         pass
-    def update_conf(self, conf, confs):
+    def conf(self, conf, confs):
+        pass
+    def placehold(self, output_name, feed_dict_out):
         pass
     def run(self, sess, output_name, feed_dict):
         return sess.run(self.get_output(output_name), feed_dict)
@@ -30,6 +32,11 @@ class ShuviMethod(object):
             self.placeholder_map[name] = tensor
         else:
             logger.error('placeholder tensor of name %s has exist' % name)
+
+    def fill_placeholders(self, output_name, feed_dict_out):
+        self.placehold(output_name, feed_dict_out)
+        for input in self.inputs:
+            input[0].fill_placeholders(input[3], feed_dict_out)
 
     def get_output(self, name):
         if name in self.output_map:

@@ -89,6 +89,7 @@ class ShuviGraph(object):
         node = self.get_node(lst[0])
         if node == None:
             return None
+        node.fill_placeholders(lst[1], feeddict)
         return node.run(sess, lst[1], feeddict)
 
     def update_conf(self, update_nodes = True):
@@ -104,7 +105,7 @@ class ShuviGraph(object):
                     logger.error('exception: %s' % str(e))
         if update_success and update_nodes:
             for node, _ in self.node_map.values():
-                node.update_conf(self.get_conf(node.get_name()),
+                node.conf(self.get_conf(node.get_name()),
                                  self.get_conf_map())
     def get_conf(self, name):
         if name in self.conf_map:
