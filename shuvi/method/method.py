@@ -1,63 +1,44 @@
-from base.logger import logger
+import base.logger as logger
 
-INPUT_NODE_TUPLE_IDX = 0
-INPUT_EDGE_TUPLE_IDX = 1
-INPUT_NODE_NAME_TUPLE_IDX = 2
-INPUT_EDGE_NAME_TUPLE_IDX = 3
 
 class ShuviMethod(object):
-    def __init__(self, name, inputs, graph, conf, confs):
+
+    def __init__(self, nodename, namespace, inputs, graph, conf, confs):
+        self.nodename = nodename
+        self.namespace = namespace
+        self.inputs = inputs
+        self.graph = graph
+
+        # edge output
         self.output_map = {}
         self.placeholder_map = {}
-        self.name = name
-
-        self.inputs = inputs
 
     def init(self, sess):
         pass
+
     def conf(self, conf, confs):
         pass
-    def placehold(self, output_name, feed_dict_out):
-        pass
-    def run(self, sess, output_name, feed_dict):
-        return sess.run(self.get_output(output_name), feed_dict)
 
-    def get_name(self):
-        return self.name
-    def get_inputs(self):
-        return self.inputs
-    def get_input_node(self, idx):
-        return self.inputs[idx][INPUT_NODE_TUPLE_IDX]
-    def get_input_edge(self, idx):
-        return self.inputs[idx][INPUT_EDGE_TUPLE_IDX]
-    def get_input_node_name(self, idx):
-        return self.inputs[idx][INPUT_NODE_NAME_TUPLE_IDX]
-    def get_input_edge_name(self, idx):
-        return self.inputs[idx][INPUT_EDGE_NAME_TUPLE_IDX]
+    def __feed_dict__(self, tensor, val):
+        self.graph.feed_dict[tensor] = val
 
-    def register_output(self, name, tensor):
-        if name not in self.output_map:
-            self.output_map[name] = tensor
-        else:
-            logger.error('output tensor of name %s has exist' % name)
-    def register_placeholder(self, name, tensor):
-        if name not in self.placeholder_map:
-            self.placeholder_map[name] = tensor
-        else:
-            logger.error('placeholder tensor of name %s has exist' % name)
+    def __get_input_edge__(self, idx):
+        return self.inputs[idx]
 
-    def fill_placeholders(self, output_name, feed_dict_out):
-        self.placehold(output_name, feed_dict_out)
-        for input in self.inputs:
-            input[0].fill_placeholders(input[3], feed_dict_out)
+    def __register_output__(self, name, tensor):
+        self.output_map[name] = tensor
+
+    def __register_placeholder__(self, name, tensor):
+        self.placeholder_map[name] = tensor
 
     def get_output(self, name):
         if name in self.output_map:
             return self.output_map[name]
-        logger.error('output %s not found' % name)
-        return None
+        else:
+            logger.error('cannot find output of name[%s]' % name)
+
     def get_placeholder(self, name):
         if name in self.placeholder_map:
             return self.placeholder_map[name]
-        logger.error('output %s not found' % name)
-        return None
+        else:
+            logger.error('cannot find output of name[%s]' % name)

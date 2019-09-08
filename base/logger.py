@@ -9,3 +9,15 @@ formatter = logging.Formatter(
     '%Y-%m-%d %H:%M:%S')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
+
+# method define
+warning = logger.warning
+
+info = logger.info
+
+debug = logger.debug
+
+
+def error(msg):
+    logger.error(msg)
+    raise Exception(msg)

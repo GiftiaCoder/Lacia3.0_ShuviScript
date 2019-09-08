@@ -1,45 +1,52 @@
 import shuvi.graph as graph
+import shuvi.script.rule as rule
 import shuvi.method.method as method
 import tensorflow as tf
-from base.logger import logger
+
+
+class InputMethod2(method.ShuviMethod):
+
+    def __init__(self, name, namespace, inputs, graph, conf, confs):
+        super().__init__(name, namespace, inputs, graph, conf, confs)
+        self.__register_output__('output', tf.Variable(tf.random_uniform([4], -1.0, 1.0)))
+
 
 class InputMethod(method.ShuviMethod):
-    def __init__(self, name, inputs, graph, conf, confs):
-        super().__init__(name, inputs, graph, conf, confs)
-        self.register_output('output', tf.Variable(tf.random_uniform([4], -1.0, 1.0)))
+
+    def __init__(self, name, namespace, inputs, graph, conf, confs):
+        super().__init__(name, namespace, inputs, graph, conf, confs)
+        input = self.__get_input_edge__(0)
+        self.__register_output__('output', input + 100.0)
+
 
 class OutputMethod(method.ShuviMethod):
-    def __init__(self, name, inputs, graph, conf, confs):
-        super().__init__(name, inputs, graph, conf, confs)
+
+    def __init__(self, name, namespace, inputs, graph, conf, confs):
+        super().__init__(name, namespace, inputs, graph, conf, confs)
 
         offset = tf.placeholder(tf.float32)
-        self.register_placeholder('offset', offset)
+        self.__register_placeholder__('offset', offset)
 
-        input = self.get_input_edge(0)
-        output = input * input + offset
-        self.register_output('output', output)
+        input = self.__get_input_edge__(0)
+        output = input + offset
+        self.__register_output__('output', output)
 
-script = '#this is just a comment example\n' \
-         'input = (output)()input_method()\n' \
-         'output1 = (output)(offset)output_method(input.output)\n' \
-         'output2 = (output)(offset)output_method(output1.output)'
-
-graph = graph.ShuviGraph(script, {
+graph = graph.ShuviGraph('script', {
     'input_method': InputMethod,
+    'input_method2' : InputMethod2,
     'output_method': OutputMethod,
-})
-if graph.build():
-    with tf.Session() as sess:
-        graph.init(sess)
+}, rule, rule)
 
-        graph.update_conf()
-        print(graph.run(sess, 'input.output'))
-        print(graph.run(sess, 'output1.output', {
-            'output1.offset': 1
-        }))
-        print(graph.run(sess, 'output2.output', {
-            'output1.offset': 1,
-            'output2.offset': 10
-        }))
-else:
-    logger.error('build graph failed')
+with tf.Session() as sess:
+    graph.init(sess)
+
+    graph.conf()
+    print(graph.run(sess, 'script.data_input'))
+    print(graph.run(sess, 'script.input.output'))
+    print(graph.run(sess, 'script.output1.output', {
+        'script.output1.offset': 1
+    }))
+    print(graph.run(sess, 'script.output2.output', {
+        'script.output1.offset': 1,
+        'script.output2.offset': 10
+    }))
