@@ -4,23 +4,25 @@
 
 ## abstract
 
-did you feel your code is too mess to build a model ?
+did you feel your code too mess to build a model ?
 
-there are always over a thousand of lines in just one or some few py files, and relationship between lines are hard to organize .
+there are always over a thousand of lines in just one or some few py files, and relationship between tensors are hard to organize .
 
-lacia project will entirely restructured by a tiny script named ShuviScript, join us !
+***ShuviScript*** provide a new way for developers to build models with ***Object Oriented*** design .
+
+care ! we just support tensorflow 1.0 currently .
 
 ---
 
 ## simple introduction of ShuviScript
 
-shuvicript can be split into three part: script, method and configure
+shuvicript can be split into three part: scripts, methods and configures
 
-you can see __shuvi_sample.py__ as an exampe
+you can see ***sample.py*** as an exampe
 
 ### script
 
-shuviscript is just a Graph Description Launguage, which works just like UML to descibe a link graph of a model . it is said that, shuviscript cannot define the real logic of a model .
+shuviscript is just a ***Graph Description Launguage***, which works just like UML to descibe the graph of a model . it is said that, shuviscript cannot define the real logic of a model .
 
 shuviscript can be written in below formation(which defined a stacked auto encoder of two layers):
 
@@ -36,28 +38,54 @@ how to understand above script:
 <node-name>=<output-list><placeholder-list><method-name><input-list>
 ```
 
-### ShuviMethod
+#### node-name
 
-shuvi method defined the real logic of a model , which can be thought in OO .
+the name of current node
 
-you just need to inherit class shuvi.method.method.ShuviMethod , and override function: __constructor__, __init__, __run__, __placehold__ and __conf__ , like below:
+#### method-name
+
+the method of current node
+
+a <method-name, Method-Constructor> relation should be given to Graph
 
 ```python
-# in this case, we donot need to initialize , set placeholder or update configure, and we can use default run method
-class OutputMethod(method.ShuviMethod):
-    def __init__(self, name, inputs, conf, confs):
-        super().__init__(name, inputs, conf, confs)
+class OutputMethod(shuvi.method.method.Method):
+    def __init__(self, inputs, inputnodes, confs, conf, logger):
+        super().__init__(inputs, inputnodes, confs, conf, logger)
 
-        offset = tf.placeholder(tf.float32)
-        self.register_placeholder('offset', offset)
+        # to create the placeholder: offset
+        # offset(in method) => offset(in script)
+        self.offset = tf.placeholder(dtype=tf.float32)
+        self.register_placeholder('offset', self.offset)
 
-        input = inputs['input.output']
-        output = input * input + offset
-        self.register_output('output', output)
+        # to create to output: output
+        # output(in method) => output(in script)
+        self.output = inputs[0] * tf.sin(inputs[0]) + self.offset
+        self.register_output('output', self.output)
+
+    # be careful ! 
+    # if your Method need a placeholder
+    # you should also need to implement a feed_dict method to set the placeholder
+    def feed_dict(self, feeddict):
+        feeddict[self.offset] = 3.141
 ```
 
-### configure
+#### output-list
 
-#### i will complete any longer (笑)
+the ***output-name*** in script should be equal to to ***output-name*** in ***class Method***
+
+#### placeholder-list
+
+the ***placeholder-name*** in script should be equal to to ***placeholder-name*** in ***class Method***
+
+#### input-list
+
+a reference list to the ***nodes*** and their ***outputs*** that have been defined
+
+an ***input*** should be written in the formation below :
+
+```
+<node-name>.<output-name>
+```
 
 ---
