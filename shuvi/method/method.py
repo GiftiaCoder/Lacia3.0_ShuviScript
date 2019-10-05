@@ -30,7 +30,7 @@ class Method(object):
 
     def run(self, sess, outputname):
         output = self.output_map.get(outputname, None)
-        if not output:
+        if output == None:
             self.logger.error('run undefined output[%s]' % outputname)
             return None
 
@@ -57,12 +57,12 @@ class Method(object):
             self.logger.error('undefined placeholder[%s]' % name)
 
     def post_construct(self):
-        if len(placeholder_map) > 0:
+        if len(self.placeholder_map) > 0:
             self.need_update_placeholder = True
 
     # self call
-    def __register_output__(self, name, tensor):
+    def register_output(self, name, tensor):
         self.output_map[name] = tensor
 
-    def __register_placeholder__(self, name, tensor):
+    def register_placeholder(self, name, tensor):
         self.placeholder_map[name] = tensor

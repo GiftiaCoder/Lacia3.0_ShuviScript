@@ -1,7 +1,7 @@
-import ply.lex as lex
-import ply.yacc as yacc
-import script.lexer
-import script.syntax
+import ply.ply.lex as lex
+import ply.ply.yacc as yacc
+from .script import lexer as compile_lexer
+from .script import syntax as compile_syntax
 
 import json
 import os
@@ -9,10 +9,12 @@ import os
 
 class Graph(object):
 
-    def __init__(self, script_text, method_registry, conf_paths, lexmod=None, synmod=None, logger=None):
+    def __init__(self, script_text, method_registry, logger, conf_paths=None):
         self.method_registry = method_registry
         self.logger = logger
         self.conf_paths = conf_paths
+        if not self.conf_paths:
+            self.conf_paths = []
 
         self.node_map = {}
         self.conf_map = {}
@@ -20,14 +22,9 @@ class Graph(object):
         self.conf_update_ts = {}
         self.__load_confs__()
 
-        if not lexmod:
-            lexmod = script.lexer
-        if not synmod:
-            synmod = script.syntax
-
-        lexer = lex.lex(module=lexmod)
-        syntax = yacc.yacc(module=synmod)
-        syntax.__define_node__ = __define_node__
+        lexer = lex.lex(module=compile_lexer)
+        syntax = yacc.yacc(module=compile_syntax)
+        syntax.__define_node__ = self.__define_node__
         if logger:
             syntax.__logger__ = logger
 
@@ -36,14 +33,14 @@ class Graph(object):
     def run(self, sess, outputpath):
         nodename, outputname = outputpath.split('.')
         node = self.node_map.get(nodename, None)
-        if not node:
+        if node == None:
             self.logger.error('node of name[%s] not found' % nodename)
             return None
         return node.run(sess, outputname)
 
     def init(self, sess, tf_initializer):
         sess.run(tf_initializer)
-        for node in self.node_map.itervalues():
+        for name, node in self.node_map.items():
             node.init(sess)
 
     def conf(self):
@@ -59,10 +56,10 @@ class Graph(object):
         input_edge_list, input_node_list = [], set()
         for input_node_name, input_edge_name in inputs:
             input_node = self.node_map.get(input_node_name, None)
-            if not input_node:
+            if input_node == None:
                 self.logger.error('undefined node[%s]' % input_node_name)
             input_edge = input_node.get_output(input_edge_name)
-            if not input_edge:
+            if input_edge == None:
                 self.logger.error('undefined edge[%s] of node[%s]' % (input_edge_name, input_node_name))
             input_node_list.add(input_node)
             input_edge_list.append(input_edge)
@@ -74,8 +71,8 @@ class Graph(object):
                                                 self.logger)
         node.post_construct()
 
-        __verify_outputs__(node, outputs)
-        __verify_placeholders__(node, placeholders)
+        self.__verify_outputs__(node, outputs)
+        self.__verify_placeholders__(node, placeholders)
 
         self.node_map[nodename] = node
 
@@ -95,14 +92,10 @@ class Graph(object):
     @staticmethod
     def __verify_outputs__(node, names):
         for name in names:
-            output = node.get_output(name)
-            if not output:
-                self.logger.error('output[%s] not defined' % name)
+            node.get_output(name)
 
     @staticmethod
     def __verify_placeholders__(node, names):
         for name in names:
-            placeholder = node.get_placeholder(name)
-            if not placeholder:
-                self.logger.error('placeholder[%s] not defined' % name)
+            node.get_placeholder(name)
 
