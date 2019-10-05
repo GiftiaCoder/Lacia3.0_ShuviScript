@@ -1,44 +1,68 @@
-import base.logger as logger
 
+class Method(object):
 
-class ShuviMethod(object):
-
-    def __init__(self, nodename, namespace, inputs, graph, conf, confs):
-        self.nodename = nodename
-        self.namespace = namespace
+    def __init__(self, inputs, inputnodes, confs, conf, logger):
         self.inputs = inputs
-        self.graph = graph
+        self.logger = logger
 
-        # edge output
+        if inputnodes:
+            self.inputnodes = inputnodes
+        else:
+            self.inputnodes = []
+
+        self.need_update_placeholder = False
+        for node in self.inputnodes:
+            if node.need_update_placeholder:
+                self.need_update_placeholder = True
+
+        # outputs
         self.output_map = {}
         self.placeholder_map = {}
 
     def init(self, sess):
         pass
 
-    def conf(self, conf, confs):
+    def conf(self, confs, conf):
         pass
 
-    def __feed_dict__(self, tensor, val):
-        self.graph.feed_dict[tensor] = val
+    def feed_dict(self, feeddict):
+        pass
 
-    def __get_input_edge__(self, idx):
-        return self.inputs[idx]
+    def run(self, sess, outputname):
+        output = self.output_map.get(outputname, None)
+        if not output:
+            self.logger.error('run undefined output[%s]' % outputname)
+            return None
 
-    def __register_output__(self, name, tensor):
-        self.output_map[name] = tensor
-
-    def __register_placeholder__(self, name, tensor):
-        self.placeholder_map[name] = tensor
+        if not self.need_update_placeholder:
+            return sess.run(output)
+        else:
+            feed_dict = {}
+            self.feed_dict(feed_dict)
+            for node in self.inputnodes:
+                if node.need_update_placeholder:
+                    node.feed_dict(feed_dict)
+            return sess.run(output, feed_dict=feed_dict)
 
     def get_output(self, name):
         if name in self.output_map:
             return self.output_map[name]
         else:
-            logger.error('cannot find output of name[%s]' % name)
+            self.logger.error('undefined output[%s]' % name)
 
     def get_placeholder(self, name):
         if name in self.placeholder_map:
             return self.placeholder_map[name]
         else:
-            logger.error('cannot find output of name[%s]' % name)
+            self.logger.error('undefined placeholder[%s]' % name)
+
+    def post_construct(self):
+        if len(placeholder_map) > 0:
+            self.need_update_placeholder = True
+
+    # self call
+    def __register_output__(self, name, tensor):
+        self.output_map[name] = tensor
+
+    def __register_placeholder__(self, name, tensor):
+        self.placeholder_map[name] = tensor

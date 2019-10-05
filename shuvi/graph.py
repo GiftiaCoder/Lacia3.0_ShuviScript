@@ -1,203 +1,108 @@
-import base.logger as logger
 import ply.lex as lex
 import ply.yacc as yacc
-import os
+import script.lexer
+import script.syntax
+
 import json
-import tensorflow as tf
+import os
 
-class ShuviGraph(object):
-    def __init__(self, package_name, method_registry, lexmodule, parsermodule, *conf_paths):
-        # parser
-        self.lexmodule = lexmodule
-        self.parsermodule = parsermodule
-        self.__cur_namespace__ = ''
-        # init data
+
+class Graph(object):
+
+    def __init__(self, script_text, method_registry, conf_paths, lexmod=None, synmod=None, logger=None):
         self.method_registry = method_registry
+        self.logger = logger
+        self.conf_paths = conf_paths
 
-        # build graph phase
-        # name => node
         self.node_map = {}
-        # name => edge/placeholder
-        self.edge_map = {}
-        self.placeholder_map = {}
-        # node_name => edge/placeholder
-        self.node_edge_map = {}
-        self.node_placeholder_map = {}
-
-        # runtime phase
-        # tensor => value
-        self.feed_dict = {}
-        # name => conf map
         self.conf_map = {}
+        # to record the last loading time stamp for each conf file
+        self.conf_update_ts = {}
+        self.__load_confs__()
 
-        # just a timestamp of each conf files
-        self.conf_file_version_map = {}
-        for conf_path in conf_paths:
-            self.conf_file_version_map[conf_path] = 0.0
+        if not lexmod:
+            lexmod = script.lexer
+        if not synmod:
+            synmod = script.syntax
 
-        # load file
-        self.__load_conf__()
-        self.__import_package__(package_name)
+        lexer = lex.lex(module=lexmod)
+        syntax = yacc.yacc(module=synmod)
+        syntax.__define_node__ = __define_node__
+        if logger:
+            syntax.__logger__ = logger
 
-    def init(self, sess):
-        sess.run(tf.global_variables_initializer())
-        for node_name in self.node_map:
-            self.node_map[node_name].init(sess)
+        syntax.parse(script_text, lexer=lexer)
 
-    def run(self, sess, edge_path, placeholders=None):
-        if edge_path not in self.edge_map:
-            logger.error('edge of path[%s] has not been defined or referenced' % edge_path)
+    def run(self, sess, outputpath):
+        nodename, outputname = outputpath.split('.')
+        node = self.node_map.get(nodename, None)
+        if not node:
+            self.logger.error('node of name[%s] not found' % nodename)
+            return None
+        return node.run(sess, outputname)
 
-        output_edge = self.edge_map[edge_path]
-        if placeholders:
-            for placeholder_path in placeholders:
-                if placeholder_path in self.placeholder_map:
-                    self.feed_dict[self.placeholder_map[placeholder_path]] = placeholders[placeholder_path]
-
-        return sess.run(output_edge, feed_dict=self.feed_dict)
+    def init(self, sess, tf_initializer):
+        sess.run(tf_initializer)
+        for node in self.node_map.itervalues():
+            node.init(sess)
 
     def conf(self):
-        if self.__load_conf__():
-            for node_path in self.node_map:
-                conf = None
-                if node_path in self.conf_map:
-                    conf = self.conf_map[node_path]
-                self.node_map[node_path].conf(conf, self.conf_map)
+        self.__load_confs__()
 
-    def __import_package__(self, package_name):
-        if type(package_name) == list:
-            self.__cur_pkg_file_path__ = '.'.join(package_name) + '.shv'
-        else:
-            self.__cur_pkg_file_path__ = './' + package_name.replace('.', '/') + '.shv'
+    # private
+    def __define_node__(self, nodename, methodname, outputs, placeholders, inputs):
+        if methodname not in self.method_registry:
+            self.logger.error('method name[%s] not registed' % methodname)
+        if nodename in self.node_map:
+            self.logger.error('node[%s] has already registed' % nodename)
 
-        with open(self.__cur_pkg_file_path__) as i_f:
-            orig_namespace = self.__cur_namespace__
+        input_edge_list, input_node_list = [], set()
+        for input_node_name, input_edge_name in inputs:
+            input_node = self.node_map.get(input_node_name, None)
+            if not input_node:
+                self.logger.error('undefined node[%s]' % input_node_name)
+            input_edge = input_node.get_output(input_edge_name)
+            if not input_edge:
+                self.logger.error('undefined edge[%s] of node[%s]' % (input_edge_name, input_node_name))
+            input_node_list.add(input_node)
+            input_edge_list.append(input_edge)
 
-            if type(package_name) == list:
-                self.__cur_namespace__ = '.'.join(package_name)
-            else:
-                self.__cur_namespace__ = package_name
+        node = self.method_registry[methodname](input_edge_list,
+                                                list(input_node_list),
+                                                self.conf_map,
+                                                self.conf_map.get(nodename, None),
+                                                self.logger)
+        node.post_construct()
 
-            lexer = lex.lex(module=self.lexmodule)
-            parser = yacc.yacc(module=self.parsermodule)
-            parser.__expr_import_package__ = self.__import_package__
-            parser.__expr_use_edge__ = self.__set_use_edge__
-            parser.__expr_use_node__ = self.__set_use_node__
-            parser.__expr_create_node__ = self.__create_node__
+        __verify_outputs__(node, outputs)
+        __verify_placeholders__(node, placeholders)
 
-            parser.parse(i_f.read(), lexer=lexer)
+        self.node_map[nodename] = node
 
-            self.__cur_namespace__ = orig_namespace
+    def __load_confs__(self):
+        for conf_path in self.conf_paths:
+            try:
+                cur_ts = os.path.getmtime(conf_path)
+                if conf_path not in self.conf_update_ts or self.conf_update_ts[conf_path] != cur_ts:
+                    with open(conf_path) as i_f:
+                        js = json.loads(i_f.read())
+                        for k in js:
+                            self.conf_map[k] = js[k]
+                    self.conf_update_ts[conf_path] = cur_ts
+            except Exception as e:
+                self.logger.warning('catch exception when loading conf file[%s]: %s' % (conf_path, str(e)))
 
-    def __set_use_edge__(self, using_edge, target_ref):
-        fin_edge = self.__get_first_valid__([
-            self.edge_map.get(self.__cur_namespace__ + '.' + '.'.join(using_edge), None),
-            self.edge_map.get('.'.join(using_edge), None)
-        ])
-        if fin_edge:
-            if len(target_ref) > 0:
-                self.edge_map[self.__cur_namespace__ + '.' + '.'.join(target_ref)] = fin_edge
-            else:
-                self.edge_map[self.__cur_namespace__ + '.' + using_edge[-1]] = fin_edge
-        else:
-            logger.error('edge of path[%s or %s] to referenced has not been defined' %
-                         ('.'.join(using_edge), self.__cur_namespace__ + '.' + '.'.join(using_edge)))
+    @staticmethod
+    def __verify_outputs__(node, names):
+        for name in names:
+            output = node.get_output(name)
+            if not output:
+                self.logger.error('output[%s] not defined' % name)
 
-    def __set_use_node__(self, using_node, target_node):
-        fin_edge_list = self.__get_first_valid__([
-            (self.node_edge_map.get(self.__cur_namespace__ + '.' + '.'.join(using_node), None), self.__cur_namespace__ + '.' + '.'.join(using_node)),
-            (self.node_edge_map.get('.'.join(using_node), None), '.'.join(using_node)),
-        ], lambda val: val[0])
-        if fin_edge_list:
-            fin_node_path = fin_edge_list[1]
-            if len(target_node) > 0:
-                target_node_path = self.__cur_namespace__ + '.' + '.'.join(target_node)
-            else:
-                target_node_path = self.__cur_namespace__ + '.' + using_node[-1]
-            for edge_name in fin_edge_list[0]:
-                self.edge_map[target_node_path + '.' + edge_name] = self.edge_map[fin_node_path + '.' + edge_name]
-        else:
-            logger.error('edge of path[%s or %s] to referenced has not been defined' %
-                         ('.'.join(using_node), self.__cur_namespace__ + '.' + '.'.join(using_node)))
+    @staticmethod
+    def __verify_placeholders__(node, names):
+        for name in names:
+            placeholder = node.get_placeholder(name)
+            if not placeholder:
+                self.logger.error('placeholder[%s] not defined' % name)
 
-    def __create_node__(self, node_name, method_name, inputs, placeholders, outputs):
-        node_path = self.__cur_namespace__ + '.' + node_name
-        edge_list, placeholder_list = [], []
-
-        input_list = []
-        for input_path in inputs:
-            fin_edge = self.__get_first_valid__([
-                self.edge_map.get(self.__cur_namespace__ + '.' + '.'.join(input_path), None),
-                self.edge_map.get('.'.join(input_path), None),
-            ])
-
-            if fin_edge != None:
-                input_list.append(fin_edge)
-            else:
-                logger.error('input edge of path[%s] has not been defined or referenced' % input_path)
-
-        conf = None
-        if node_path in self.conf_map:
-            conf = self.conf_map[node_path]
-
-        if method_name in self.method_registry:
-            node = self.method_registry[method_name](node_name,
-                                                     self.__cur_namespace__,
-                                                     input_list,
-                                                     self,
-                                                     conf,
-                                                     self.conf_map)
-            self.node_map[node_path] = node
-
-            for output in outputs:
-                edge_path = node_path + '.' + output
-                if edge_path not in self.edge_map:
-                    edge_list.append(output)
-                    self.edge_map[edge_path] = node.get_output(output)
-
-                else:
-                    logger.error('edge of path[%s] has been defined or referenced in current namespace[%s]' %
-                                 (edge_path, self.__cur_namespace__))
-            self.node_edge_map[node_path] = edge_list
-
-            for placeholder in placeholders:
-                placeholder_path = node_path + '.' + placeholder
-                if placeholder_path not in self.placeholder_map:
-                    placeholder_list.append(placeholder)
-                    self.placeholder_map[placeholder_path] = node.get_placeholder(placeholder)
-                else:
-                    logger.error('placeholder of path[%s] has been defined or referenced in current namespace[%s]' %
-                                 (placeholder_path, self.__cur_namespace__))
-            self.node_placeholder_map[node_path] = placeholder_list
-        else:
-            logger.error('method[%s] not in registry' % method_name)
-
-    def __load_conf__(self):
-        try:
-            conf_updated = False
-            for conf_path in self.conf_file_version_map:
-                if self.__reload_conf_if_need__(conf_path):
-                    conf_updated = True
-            return conf_updated
-        except:
-            return False
-
-    def __reload_conf_if_need__(self, conf_path):
-        last_version = self.conf_file_version_map.get(conf_path, 0.0)
-        modify_version = os.path.getmtime(conf_path)
-        if last_version != modify_version:
-            with open(conf_path) as i_f:
-                obj = json.loads(i_f.read())
-                for key in obj:
-                    self.conf_map[key] = obj[key]
-            self.conf_file_version_map[conf_path] = modify_version
-
-    def __get_first_valid__(self, vals, condition=None):
-        for val in vals:
-            if condition:
-                if condition(val):
-                    return val
-            else:
-                if val != None:
-                    return val
-        return None
