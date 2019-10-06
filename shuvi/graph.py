@@ -46,7 +46,7 @@ class Graph(object):
     def conf(self):
         if self.__load_confs__():
             for name, node in self.node_map.items():
-                node.init(sess)
+                node.conf(self.conf_map, self.conf_map.get(name, None))
 
     # private
     def __define_node__(self, nodename, methodname, outputs, placeholders, inputs):
