@@ -24,18 +24,19 @@ you can see ***sample.py*** as an exampe
 
 shuviscript is just a ***Graph Description Launguage***, which works just like UML to descibe the graph of a model . it is said that, shuviscript cannot define the real logic of a model .
 
-shuviscript can be written in below formation(which defined a stacked auto encoder of two layers):
+shuviscript should be written in the formation below :
 
-```
-input=(output)()input_pipe()
-lay1=(encode, decode, train)(studyrate)sae_relu(input.output)
-lay2=(encode, decode, train)(studyrate)sae_tanh(lay1.encode)
-```
-
-how to understand above script:
-
-```
+```python
 <node-name>=<output-list><placeholder-list><method-name><input-list>
+```
+
+for example :
+
+```python
+# define a input node
+input = (output)()input_method()
+# use input.output as input to build an other output node
+output = (output)(offset)output_method(input.output)
 ```
 
 #### node-name
@@ -87,5 +88,52 @@ an ***input*** should be written in the formation below :
 ```
 <node-name>.<output-name>
 ```
+
+### Method
+
+just like the section ***method-name*** above
+
+there are 4 method you can inherit in ***class Method*** : ***constructor***, ***init***, ***conf*** and ***feed_back***
+
+#### constructor
+
+you should build your outputs and placeholders here
+
+you can also do something else
+
+#### init
+
+if there is something need initialized with a ***Session***, do it here
+
+#### conf
+
+load conf data here
+
+***confs*** is a dict of global conf data
+
+***conf*** is a child in ***confs***, which only contain to data of current node, and of course, it's also a dict
+
+```python
+# you can inherit the conf metdhod like this
+# with the example in method-name section above
+def conf(self, confs, conf):
+    self.val_offset = conf['offset']
+```
+
+#### feed_dict
+
+to fill the ***feed_dict*** before ***Session.run***
+
+if current node provide any placeholders, you should inherit this method
+
+```python
+# with the example in conf section, you can write your feed_dict method like tihs
+def feed_dict(self, feeddict):
+    feeddict[self.offset] = self.val_offset
+```
+
+### Configure
+
+i'll complete any further (笑)
 
 ---
