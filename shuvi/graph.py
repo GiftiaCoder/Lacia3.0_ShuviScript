@@ -44,7 +44,9 @@ class Graph(object):
             node.init(sess)
 
     def conf(self):
-        self.__load_confs__()
+        if self.__load_confs__():
+            for name, node in self.node_map.items():
+                node.init(sess)
 
     # private
     def __define_node__(self, nodename, methodname, outputs, placeholders, inputs):
@@ -77,6 +79,7 @@ class Graph(object):
         self.node_map[nodename] = node
 
     def __load_confs__(self):
+        has_updated = False
         for conf_path in self.conf_paths:
             try:
                 cur_ts = os.path.getmtime(conf_path)
@@ -86,8 +89,10 @@ class Graph(object):
                         for k in js:
                             self.conf_map[k] = js[k]
                     self.conf_update_ts[conf_path] = cur_ts
+                    has_updated = True
             except Exception as e:
                 self.logger.warning('catch exception when loading conf file[%s]: %s' % (conf_path, str(e)))
+        return has_updated
 
     @staticmethod
     def __verify_outputs__(node, names):
