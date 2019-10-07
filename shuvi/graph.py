@@ -1,5 +1,5 @@
-import ply.ply.lex as lex
-import ply.ply.yacc as yacc
+import ply.lex as lex
+import ply.yacc as yacc
 from .script import lexer as compile_lexer
 from .script import syntax as compile_syntax
 
