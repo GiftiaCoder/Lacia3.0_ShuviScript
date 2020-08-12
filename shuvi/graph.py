@@ -1,7 +1,8 @@
-import ply.lex as lex
-import ply.yacc as yacc
+import ply.ply.lex as lex
+import ply.ply.yacc as yacc
 from .script import lexer as compile_lexer
 from .script import syntax as compile_syntax
+from .script import preparser
 
 import json
 import os
@@ -28,7 +29,12 @@ class Graph(object):
         if logger:
             syntax.__logger__ = logger
 
-        syntax.parse(script_text, lexer=lexer)
+        parser = preparser.Parser()
+        for c in script_text:
+            parser.feed(c)
+        parser.close()
+        self.logger.warning('final shuvi script[%s]' % parser.get_final_script())
+        syntax.parse(parser.get_final_script(), lexer=lexer)
 
     def run(self, sess, outputpath):
         nodename, outputname = outputpath.split('.')
@@ -48,6 +54,14 @@ class Graph(object):
             for name, node in self.node_map.items():
                 node.conf(self.conf_map, self.conf_map.get(name, None))
 
+    def get_output(self, outputpath):
+        nodename, outputname = outputpath.split('.')
+        node = self.node_map.get(nodename, None)
+        if node is None:
+            self.logger.error('node of name[%s] not found' % nodename)
+            return None
+        return node.get_output(outputname)
+
     # private
     def __define_node__(self, nodename, methodname, outputs, placeholders, inputs):
         if methodname not in self.method_registry:
@@ -58,15 +72,16 @@ class Graph(object):
         input_edge_list, input_node_list = [], set()
         for input_node_name, input_edge_name in inputs:
             input_node = self.node_map.get(input_node_name, None)
-            if input_node == None:
+            if input_node is None:
                 self.logger.error('undefined node[%s]' % input_node_name)
             input_edge = input_node.get_output(input_edge_name)
-            if input_edge == None:
+            if input_edge is None:
                 self.logger.error('undefined edge[%s] of node[%s]' % (input_edge_name, input_node_name))
             input_node_list.add(input_node)
             input_edge_list.append(input_edge)
 
-        node = self.method_registry[methodname](input_edge_list,
+        node = self.method_registry[methodname](self,
+                                                input_edge_list,
                                                 list(input_node_list),
                                                 self.conf_map,
                                                 self.conf_map.get(nodename, None),

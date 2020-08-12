@@ -1,7 +1,8 @@
 
 class Method(object):
 
-    def __init__(self, inputs, inputnodes, confs, conf, logger):
+    def __init__(self, graph, inputs, inputnodes, confs, conf, logger):
+        self.graph = graph
         self.inputs = inputs
         self.logger = logger
 
@@ -59,6 +60,9 @@ class Method(object):
     def post_construct(self):
         if len(self.placeholder_map) > 0:
             self.need_update_placeholder = True
+
+    def get_graph(self):
+        return self.graph
 
     # self call
     def register_output(self, name, tensor):

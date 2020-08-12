@@ -2,23 +2,38 @@ import shuvi.graph
 from shuvi.method.method import Method
 from base.logger import logger
 
-import tensorflow as tf
+import tensorflow
+logger.info('tensorflow.__version__ = %s' % tensorflow.__version__)
+if tensorflow.__version__.split('.')[0] == '1':
+    import tensorflow as tf
+else:
+    import tensorflow.compat.v1 as tf
+    tf.disable_v2_behavior()
 
-script_text = 'input = (output)()input_method()' \
-              + 'out1 = (output)(offset)output_method(input.output)' \
-              + 'out2 = (output)(offset)output_method(out1.output)'
+script_text = '''
+input = (output)()input_method()
+
+{{
+# this is a python script which used like javascript in html
+input_name = 'input.output'
+print('out1 = (output)(offset)output_method(%s)' % input_name)
+}}
+
+out2 = (output)(offset)output_method(out1.output)
+'''
+
 
 class InputMethod(Method):
-    def __init__(self, inputs, inputnodes, confs, conf, logger):
-        super().__init__(inputs, inputnodes, confs, conf, logger)
+    def __init__(self, graph, inputs, inputnodes, confs, conf, logger):
+        super().__init__(graph, inputs, inputnodes, confs, conf, logger)
 
         self.output = tf.Variable([2, 3, 5, 7, 11, 13], dtype=tf.float32)
         self.register_output('output', self.output)
 
 
 class OutputMethod(Method):
-    def __init__(self, inputs, inputnodes, confs, conf, logger):
-        super().__init__(inputs, inputnodes, confs, conf, logger)
+    def __init__(self, graph, inputs, inputnodes, confs, conf, logger):
+        super().__init__(graph, inputs, inputnodes, confs, conf, logger)
 
         self.val_offset = conf['offset']
 
