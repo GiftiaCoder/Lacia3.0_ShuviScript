@@ -70,3 +70,6 @@ class Method(object):
 
     def register_placeholder(self, name, tensor):
         self.placeholder_map[name] = tensor
+
+    def list_conf_name(self):
+        return ()

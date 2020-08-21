@@ -19,6 +19,7 @@ class Graph(object):
 
         self.node_map = {}
         self.conf_map = {}
+        self.__conf_gen_list__ = []
         # to record the last loading time stamp for each conf file
         self.conf_update_ts = {}
         self.__load_confs__()
@@ -54,6 +55,10 @@ class Graph(object):
             for name, node in self.node_map.items():
                 node.conf(self.conf_map, self.conf_map.get(name, None))
 
+    def gen_conf(self, out_path):
+        with open(out_path, 'w+') as _f:
+            _f.write('\n'.join(['{'] + ['"%s":%s,' % (name, json.dumps(conf, indent=4)) for name, conf in self.__conf_gen_list__] + ['"conf_end_flag": "pls remove it"\n}']))
+
     def get_output(self, outputpath):
         nodename, outputname = outputpath.split('.')
         node = self.node_map.get(nodename, None)
@@ -87,10 +92,17 @@ class Graph(object):
                                                 self.conf_map.get(nodename, None),
                                                 self.logger)
         node.post_construct()
-
+        
         self.__verify_outputs__(node, outputs)
         self.__verify_placeholders__(node, placeholders)
 
+        # generate conf
+        node_conf_to_gen = {}
+        for conf_name, dft_val in node.list_conf_name():
+            node_conf_to_gen[conf_name] = dft_val
+        self.__conf_gen_list__.append((nodename, node_conf_to_gen))
+
+        # register node
         self.node_map[nodename] = node
 
     def __load_confs__(self):

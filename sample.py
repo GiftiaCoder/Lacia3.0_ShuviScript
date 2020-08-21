@@ -49,6 +49,9 @@ class OutputMethod(Method):
     def conf(self, confs, conf):
         self.val_offset = conf['offset']
 
+    def list_conf_name(self):
+        return [('offset', 0)]
+
 
 graph = shuvi.graph.Graph(script_text, {
     'input_method': InputMethod,
@@ -56,6 +59,7 @@ graph = shuvi.graph.Graph(script_text, {
 }, logger=logger, conf_paths=[
     'sample.json.conf'
 ])
+graph.gen_conf('./sample.gen.conf')
 
 with tf.Session() as sess:
     graph.init(sess, tf.global_variables_initializer())
